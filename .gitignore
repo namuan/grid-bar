@@ -1,0 +1,20 @@
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# Xcode
+build/
+*.xcodeproj/
+*.xcworkspace/
+xcuserdata/
+*.xccheckout
+*.moved-aside
+DerivedData/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Backups created by install.command
+*.app.bak.*
