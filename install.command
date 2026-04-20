@@ -67,16 +67,21 @@ EOF
 
 printf 'APPL????' > "$BUNDLE/Contents/PkgInfo"
 
+# Strip all extended attributes (quarantine flags etc.)
+xattr -cr "$BUNDLE"
+
 # Ad-hoc sign so macOS will launch it
 codesign --force --deep --sign - "$BUNDLE" 2>/dev/null || true
 
 /bin/mkdir -p "$DEST_DIR"
 
 if [ -d "$DEST_APP" ]; then
-    backup="$DEST_DIR/$APP_NAME.app.bak.$(/bin/date +%Y%m%d-%H%M%S)"
-    echo "Backing up existing install to: $backup"
-    /bin/mv "$DEST_APP" "$backup"
+    echo "Removing existing install..."
+    /bin/rm -rf "$DEST_APP"
 fi
+
+echo "Resetting existing TCC permissions for $APP_NAME..."
+tccutil reset All com.gridbar.app 2>/dev/null || true
 
 echo "Installing to: $DEST_APP"
 /usr/bin/ditto "$BUNDLE" "$DEST_APP"

@@ -3,7 +3,6 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var scanner = MenuBarScanner()
     @State private var selectedItem: MenuBarItem?
-
     let columns = [GridItem(.adaptive(minimum: 90, maximum: 110), spacing: 16)]
 
     var body: some View {
@@ -99,7 +98,15 @@ struct ContentView: View {
         }
         .padding(6)
         .contentShape(Rectangle())
-        .onTapGesture { selectedItem = item }
+        .onTapGesture { MenuBarActivator.activate(item) }
+        .contextMenu {
+            Button("Show Info") { selectedItem = item }
+            Divider()
+            Button("Activate App") {
+                NSRunningApplication(processIdentifier: item.pid)?
+                    .activate(options: .activateIgnoringOtherApps)
+            }
+        }
         .help(item.ownerName)
     }
 }
